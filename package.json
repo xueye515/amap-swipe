@@ -1,0 +1,27 @@
+{
+  "name": "amap-swipe",
+  "version": "1.0.0",
+  "description": "地图卷帘对比",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xueye515/amap-swipe.git"
+  },
+  "keywords": [
+    "swipe",
+    "side-by-side",
+    "卷帘"
+  ],
+  "author": "xueye515",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xueye515/amap-swipe/issues"
+  },
+  "homepage": "https://github.com/xueye515/amap-swipe#readme",
+  "dependencies": {
+    "amap": "^1.0.7"
+  }
+}
