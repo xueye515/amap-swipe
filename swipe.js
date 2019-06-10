@@ -11,7 +11,6 @@ AMap.homeControlDiv = function (firstL, SecondL, option) {
   this.setFirstLayer = function (layer) {
     this._firstLayer = layer;
   }
-  
 
   this.setSecondLayer = function (layer) {
     this._secondLayer = layer;
