@@ -6,6 +6,7 @@ AMap.homeControlDiv = function (firstL, SecondL, option) {
   this._firstLayer = firstL;
   this._secondLayer = SecondL;
   this._swipType = 0;//0 左右  1，上下
+  
   this._map = null;
 
   this.setFirstLayer = function (layer) {
