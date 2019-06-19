@@ -40,6 +40,7 @@ AMap.homeControlDiv = function(firstL, SecondL, option) {
     if (dom && this._showBar) {
       dom.appendChild(this._getSwipeDom());
     }
+    this._updateClip();
     this._addEvents();
   };
 
@@ -51,17 +52,23 @@ AMap.homeControlDiv = function(firstL, SecondL, option) {
   };
 
   this._updateClip = function() {
+    debugger;
     var map = this._map;
     var mapSize = map.getSize();
     var clipX = this._getPosition();
 
-    // this._divider.style.left = dividerX + 'px'
-    // this.fire('dividermove', {x: dividerX})
     var map1Clip = 'rect(0px,' + clipX + 'px,' + mapSize.height + 'px,0px)';
-    var map2Clip = 'rect(' + clipX + 'px,' + mapSize.width + 'px,'+ mapSize.height + 'px,0px)';
-debugger;
+    var map2Clip =
+      'rect(0px,' +
+      mapSize.width +
+      'px,' +
+      mapSize.height +
+      'px,' +
+      clipX +
+      'px)';
+
     if (this._firstLayer) {
-      this._firstLayer.ed.style.clip = map1Clip;
+      this._firstLayer.getContainer().style.clip = map1Clip;
     }
     if (this._secondLayer) {
       this._secondLayer.getContainer().style.clip = map2Clip;
@@ -76,20 +83,17 @@ debugger;
     // map.on('layeradd layerremove', this._updateLayers, this)
     // on(range, getRangeEvent(range), this._updateClip, this);
     // range.on(getRangeEvent(range), this._updateClip, this)
+    map.on('mapmove',this._updateClip.bind(this));
     range.addEventListener(
       getRangeEvent(range),
       this._updateClip.bind(this),
       false
     );
-    // on(range, L.Browser.touch ? 'touchstart' : 'mousedown', cancelMapDrag, this)
-    // on(range, L.Browser.touch ? 'touchend' : 'mouseup', uncancelMapDrag, this)
   };
 
   this._getSwipeDom = function() {
     const swipDiv = document.createElement('div');
     swipDiv.id = 'test001';
-
-    // range.style.paddingLeft = range.style.paddingRight = this.options.padding + 'px'
 
     // 创建一个能承载控件的<div>容器
     var controlUI = document.createElement('DIV');
