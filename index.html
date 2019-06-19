@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ImageLayer</title>
-    <meta id="viewport" name="viewport"
-        content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0" />
+    <meta
+      id="viewport"
+      name="viewport"
+      content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0"
+    />
     <style>
-        html,
-        body,
-        #container {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-        }
+      html,
+      body,
+      #container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="container"></div>
     <script src="https://webapi.amap.com/maps?v=1.4.14&key=449f544f96f41c1264ff6f656d967737"></script>
     <script src="https://webapi.amap.com/loca?v=1.3.0&key=449f544f96f41c1264ff6f656d967737"></script>
@@ -27,116 +29,119 @@
     <script src="https://a.amap.com/jsapi_demos/static/resource/heatmapData.js"></script>
     <script src="./swipe.js"></script>
     <script>
-        var map = new AMap.Map('container', {
-            resizeEnable: true,
-            // viewMode:"3D",
-            zoom: 15,
-            center: [116.335183, 39.941735]
-        });
+      var map = new AMap.Map('container', {
+        resizeEnable: true,
+        // viewMode:"3D",
+        zoom: 15,
+        center: [116.335183, 39.941735]
+      });
 
-        AMap.plugin(["AMap.ControlBar"], function () {
-            var bar = new AMap.ControlBar();
-            map.addControl(bar);
-        });
+      AMap.plugin(['AMap.ControlBar'], function() {
+        var bar = new AMap.ControlBar();
+        map.addControl(bar);
+      });
 
-        var layer = new Loca.PointLayer({
-            map: map
-        });
+      var layer = new Loca.PointLayer({
+        map: map
+      });
 
-        layer.setData(districts, {
-            // 指定经纬度所在字段
-            lnglat: 'center'
-        });
+      layer.setData(districts, {
+        // 指定经纬度所在字段
+        lnglat: 'center'
+      });
 
-        layer.setOptions({
-            style: {
-                // 圆形半径，单位像素
-                radius: 13,
-                // 填充颜色
-                color: '#f3ad6a',
-                // 描边颜色
-                borderColor: '#5a6aff',
-                // 描边宽度，单位像素
-                borderWidth: 1,
-                // 透明度 [0-1]
-                opacity: 0.9,
-            }
-        });
+      layer.setOptions({
+        style: {
+          // 圆形半径，单位像素
+          radius: 13,
+          // 填充颜色
+          color: '#f3ad6a',
+          // 描边颜色
+          borderColor: '#5a6aff',
+          // 描边宽度，单位像素
+          borderWidth: 1,
+          // 透明度 [0-1]
+          opacity: 0.9
+        }
+      });
 
-        layer.render();
-       
+      layer.render();
 
-        /*
-         * 添加Canvas图层
-         */
-        var canvas = document.createElement('canvas');
-        canvas.width = canvas.height = 200;
+      /*
+       * 添加Canvas图层
+       */
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 200;
 
-        var context = canvas.getContext('2d')
-        context.fillStyle = 'rgb(0,100,255)';
-        context.strokeStyle = 'white';
-        context.globalAlpha = 1;
-        context.lineWidth = 2;
+      var context = canvas.getContext('2d');
+      context.fillStyle = 'rgb(0,100,255)';
+      context.strokeStyle = 'white';
+      context.globalAlpha = 1;
+      context.lineWidth = 2;
 
-        var radious = 100;
-        var draw = function () {
-            context.clearRect(0, 0, 200, 200)
-            context.globalAlpha = (context.globalAlpha - 0.01 + 1) % 1;
-            radious = (radious + 1) % 100;
+      var radious = 100;
+      var draw = function() {
+        context.clearRect(0, 0, 200, 200);
+        context.globalAlpha = (context.globalAlpha - 0.01 + 1) % 1;
+        radious = (radious + 1) % 100;
 
-            context.beginPath();
-            context.arc(100, 100, radious, 0, 2 * Math.PI);
-            context.fill();
-            context.stroke();
+        context.beginPath();
+        context.arc(100, 100, radious, 0, 2 * Math.PI);
+        context.fill();
+        context.stroke();
 
-            //2D视图时可以省略
-            CanvasLayer.reFresh();
+        //2D视图时可以省略
+        CanvasLayer.reFresh();
 
-            AMap.Util.requestAnimFrame(draw);
-        };
+        AMap.Util.requestAnimFrame(draw);
+      };
 
-        var CanvasLayer = new AMap.CanvasLayer({
-            canvas: canvas,
-            bounds: new AMap.Bounds(
-                [116.328911, 39.937229],
-                [116.342659, 39.946275]
-            ),
-            zooms: [3, 18],
-        });
+      var CanvasLayer = new AMap.CanvasLayer({
+        canvas: canvas,
+        bounds: new AMap.Bounds(
+          [116.328911, 39.937229],
+          [116.342659, 39.946275]
+        ),
+        zooms: [3, 18]
+      });
 
-        CanvasLayer.setMap(map);
-        // draw();
+      CanvasLayer.setMap(map);
+      // draw();
 
-
-        var heatmap;
-    map.plugin(["AMap.Heatmap"], function () {
+      var heatmap;
+      
+      var heatmap2;
+      map.plugin(['AMap.Heatmap'], function() {
         //初始化heatmap对象
         heatmap = new AMap.Heatmap(map, {
-            radius: 25, //给定半径
-            opacity: [0, 0.8]
-            /*,
-            gradient:{
-                0.5: 'blue',
-                0.65: 'rgb(117,211,248)',
-                0.7: 'rgb(0, 255, 0)',
-                0.9: '#ffea00',
-                1.0: 'red'
-            }
-             */
+          radius: 25, //给定半径
+          opacity: [0, 0.8]
         });
-        //设置数据集：该数据为北京部分“公园”数据
         heatmap.setDataSet({
-            data: heatmapData,
-            max: 100
+          data: heatmapData,
+          max: 100
         });
-    });
 
+        heatmap2 = new AMap.Heatmap(map, {
+          radius: 45, //给定半径
+          opacity: [0, 0.8]
+        });
+        heatmap2.setDataSet({
+          data: heatmapData,
+          max: 100
+        });
+      });
 
-        var homeControl = new AMap.homeControlDiv(heatmap,layer); //新建自定义插件对象  
-        
-        map.addControl(homeControl);
+      heatmap.getContainer = function() {
+        return heatmap.ed;
+      };
+      heatmap2.getContainer = function() {
+        return heatmap2.ed;
+      };
 
+      var homeControl = new AMap.homeControlDiv(heatmap, heatmap2); //新建自定义插件对象
+
+      map.addControl(homeControl);
     </script>
-</body>
-
+  </body>
 </html>
