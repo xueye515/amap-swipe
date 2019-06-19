@@ -67,47 +67,6 @@
 
       layer.render();
 
-      /*
-       * 添加Canvas图层
-       */
-      var canvas = document.createElement('canvas');
-      canvas.width = canvas.height = 200;
-
-      var context = canvas.getContext('2d');
-      context.fillStyle = 'rgb(0,100,255)';
-      context.strokeStyle = 'white';
-      context.globalAlpha = 1;
-      context.lineWidth = 2;
-
-      var radious = 100;
-      var draw = function() {
-        context.clearRect(0, 0, 200, 200);
-        context.globalAlpha = (context.globalAlpha - 0.01 + 1) % 1;
-        radious = (radious + 1) % 100;
-
-        context.beginPath();
-        context.arc(100, 100, radious, 0, 2 * Math.PI);
-        context.fill();
-        context.stroke();
-
-        //2D视图时可以省略
-        CanvasLayer.reFresh();
-
-        AMap.Util.requestAnimFrame(draw);
-      };
-
-      var CanvasLayer = new AMap.CanvasLayer({
-        canvas: canvas,
-        bounds: new AMap.Bounds(
-          [116.328911, 39.937229],
-          [116.342659, 39.946275]
-        ),
-        zooms: [3, 18]
-      });
-
-      CanvasLayer.setMap(map);
-      // draw();
-
       var heatmap;
       
       var heatmap2;
