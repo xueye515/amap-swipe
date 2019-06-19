@@ -1,93 +1,132 @@
+// require('./swipe.css');
 
-require('./swipe.css');
+function getRangeEvent(rangeInput) {
+  return 'oninput' in rangeInput ? 'input' : 'change';
+}
 
-AMap.homeControlDiv = function (firstL, SecondL, option) {
-
+AMap.homeControlDiv = function(firstL, SecondL, option) {
   this._firstLayer = firstL;
   this._secondLayer = SecondL;
-  this._swipType = 0;//0 左右  1，上下
+  this._swipType = 0; //0 左右  1，上下
+  this._showBar = true; //是否显示默认滑动条
+
   this._map = null;
 
-  this.setFirstLayer = function (layer) {
+  this.setFirstLayer = function(layer) {
     this._firstLayer = layer;
-  }
+  };
 
-  this.setSecondLayer = function (layer) {
+  this.setSecondLayer = function(layer) {
     this._secondLayer = layer;
-  }
+  };
 
-  this.updatePos = function (pos) {
-
-  }
-  this.setType = function (type) {
+  this.updatePos = function(pos) {};
+  this.setType = function(type) {
     this._swipType = type;
-  }
-  this.addTo = function (map, dom) {
+  };
+  this.addTo = function(map, dom) {
     this._map = map;
     if (this._firstLayer) {
       if (this._firstLayer.getMap() !== this._map) {
-        this._firstLayer.setMap(this._map)
+        this._firstLayer.setMap(this._map);
       }
     }
     if (this._secondLayer) {
       if (this._secondLayer.getMap() !== this._map) {
-        this._secondLayer.setMap(this._map)
+        this._secondLayer.setMap(this._map);
       }
     }
 
-    if (dom) {
+    if (dom && this._showBar) {
       dom.appendChild(this._getSwipeDom());
     }
-  }
+    this._addEvents();
+  };
 
-  _getSwipeDom = function () {
+  this._getPosition = function() {
+    var rangeValue = this._range.value;
+    // var offset =
+    //   (0.5 - rangeValue) * (2 * this.options.padding + this.options.thumbSize);
+    return this._map.getSize().width * rangeValue;
+  };
 
+  this._updateClip = function() {
+    var map = this._map;
+    var mapSize = map.getSize();
+    var clipX = this._getPosition();
 
+    // this._divider.style.left = dividerX + 'px'
+    // this.fire('dividermove', {x: dividerX})
+    var map1Clip = 'rect(0px,' + clipX + 'px,' + mapSize.height + 'px,0px)';
+    var map2Clip = 'rect(' + clipX + 'px,' + mapSize.width + 'px,'+ mapSize.height + 'px,0px)';
+debugger;
+    if (this._firstLayer) {
+      this._firstLayer.ed.style.clip = map1Clip;
+    }
+    if (this._secondLayer) {
+      this._secondLayer.getContainer().style.clip = map2Clip;
+    }
+  };
 
+  this._addEvents = function() {
+    var range = this._range;
+    var map = this._map;
+    if (!map || !range) return;
+    // map.on('move', this._updateClip, this)
+    // map.on('layeradd layerremove', this._updateLayers, this)
+    // on(range, getRangeEvent(range), this._updateClip, this);
+    // range.on(getRangeEvent(range), this._updateClip, this)
+    range.addEventListener(
+      getRangeEvent(range),
+      this._updateClip.bind(this),
+      false
+    );
+    // on(range, L.Browser.touch ? 'touchstart' : 'mousedown', cancelMapDrag, this)
+    // on(range, L.Browser.touch ? 'touchend' : 'mouseup', uncancelMapDrag, this)
+  };
+
+  this._getSwipeDom = function() {
     const swipDiv = document.createElement('div');
-    this._divider = document.createElement('div', 'leaflet-sbs-divider', container)
-    var range = this._range = document.createElement('input', 'leaflet-sbs-range', container)
-    range.type = 'range'
-    range.min = 0
-    range.max = 1
-    range.step = 'any'
-    range.value = 0.5
+    swipDiv.id = 'test001';
+
     // range.style.paddingLeft = range.style.paddingRight = this.options.padding + 'px'
 
-    // 创建一个能承载控件的<div>容器                  
-    var controlUI = document.createElement("DIV");
-    controlUI.style.width = '80px';     //设置控件容器的宽度  
-    controlUI.style.height = '20px';    //设置控件容器的高度                  
-    controlUI.style.backgroundColor = 'white';
-    controlUI.style.borderStyle = 'solid';
-    controlUI.style.borderWidth = '2px';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.textAlign = 'center';
+    // 创建一个能承载控件的<div>容器
+    var controlUI = document.createElement('DIV');
+    swipDiv.style.width = '100%'; //设置控件容器的宽度
+    swipDiv.style.backgroundColor = 'transparent';
+    swipDiv.style.cursor = 'pointer';
+    swipDiv.style.textAlign = 'center';
 
-    // 设置控件的位置                   
-    controlUI.style.position = 'absolute';
-    controlUI.style.left = '120px';     //设置控件离地图的左边界的偏移量                  
-    controlUI.style.top = '5px';        //设置控件离地图上边界的偏移量                  
-    controlUI.style.zIndex = '300';     //设置控件在地图上显示                  
+    // 设置控件的位置
+    swipDiv.style.position = 'absolute';
+    swipDiv.style.margin = '0 20px';
+    swipDiv.style.zIndex = '300'; //设置控件在地图上显示
 
-    // 设置控件字体样式                  
-    controlUI.style.fontFamily = 'Arial,sens-serif';
-    controlUI.style.fontSize = '12px';
-    controlUI.style.paddingLeft = '4px';
-    controlUI.style.paddingRight = '4px';
-    controlUI.innerHTML = "返回中心";
+    // 设置控件字体样式
+    swipDiv.style.fontFamily = 'Arial,sens-serif';
+    swipDiv.style.fontSize = '12px';
+    swipDiv.style.paddingLeft = '4px';
+    swipDiv.style.paddingRight = '4px';
+    // swipDiv.innerHTML = "返回中心";
 
-    return controlUI;
-  }
+    var range = (this._range = document.createElement('input'));
+    range.type = 'range';
+    range.min = 0;
+    range.max = 1;
+    range.step = 'any';
+    range.value = 0.5;
+    range.style.width = '100%';
+    range.style.top = '50%';
 
-}
+    swipDiv.appendChild(range);
 
+    return swipDiv;
+  };
+};
 
-
-
-
-// mapObj.plugin(["AMap.MapType"],function(){  //添加地图类型切换插件 
-//   //地图类型切换  
-//   mapType= new AMap.MapType({defaultType:2,showRoad:true});  
-//   mapObj.addControl(mapType);  
+// mapObj.plugin(["AMap.MapType"],function(){  //添加地图类型切换插件
+//   //地图类型切换
+//   mapType= new AMap.MapType({defaultType:2,showRoad:true});
+//   mapObj.addControl(mapType);
 // });
